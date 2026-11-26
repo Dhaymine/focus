@@ -12,29 +12,42 @@ permissions:
 
 jobs:
   bootstrap:
-    if: ${{ hashFiles('pubspec.yaml') == '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check if project already exists
+        id: check
+        run: |
+          if [ -f pubspec.yaml ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup Flutter
+        if: steps.check.outputs.exists == 'false'
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
       - name: Print Flutter version
+        if: steps.check.outputs.exists == 'false'
         run: |
           flutter --version
           flutter --version > FLUTTER_VERSION.txt
 
       - name: Create Flutter project (Android + Windows only)
+        if: steps.check.outputs.exists == 'false'
         run: flutter create . --project-name focus --org com.focus.app --platforms=android,windows
 
       - name: Show generated pubspec
+        if: steps.check.outputs.exists == 'false'
         run: cat pubspec.yaml
 
       - name: Commit generated files
+        if: steps.check.outputs.exists == 'false'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
