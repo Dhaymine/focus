@@ -1,0 +1,17 @@
+{
+  "@@locale": "fr",
+  "appName": "FOCUS",
+  "navHome": "Accueil",
+  "navFocus": "Focus",
+  "navTasks": "Tâches",
+  "navCountdown": "Compte à rebours",
+  "navStatistics": "Statistiques",
+  "settings": "Paramètres",
+  "welcome": "Bon retour",
+  "theme": "Thème",
+  "themeDark": "Sombre",
+  "themeLight": "Clair",
+  "themeSystem": "Système",
+  "language": "Langue",
+  "placeholderNote": "Aperçu de la phase 2. La vraie interface arrive en phase 3."
+}
