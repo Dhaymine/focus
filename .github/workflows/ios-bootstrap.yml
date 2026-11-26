@@ -1,0 +1,42 @@
+name: iOS Bootstrap
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-ios:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check if iOS folder exists
+        id: check
+        run: |
+          if [ -d ios ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Flutter
+        if: steps.check.outputs.exists == 'false'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Add iOS platform
+        if: steps.check.outputs.exists == 'false'
+        run: flutter create . --project-name focus --org com.focus.app --platforms=ios
+
+      - name: Commit iOS folder
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add iOS platform" || echo "Nothing to commit"
+          git push
