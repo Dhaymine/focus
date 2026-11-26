@@ -1,0 +1,17 @@
+{
+  "@@locale": "ar",
+  "appName": "FOCUS",
+  "navHome": "الرئيسية",
+  "navFocus": "التركيز",
+  "navTasks": "المهام",
+  "navCountdown": "العد التنازلي",
+  "navStatistics": "الإحصائيات",
+  "settings": "الإعدادات",
+  "welcome": "مرحباً بعودتك",
+  "theme": "المظهر",
+  "themeDark": "داكن",
+  "themeLight": "فاتح",
+  "themeSystem": "النظام",
+  "language": "اللغة",
+  "placeholderNote": "معاينة المرحلة 2. الواجهة الحقيقية تأتي في المرحلة 3."
+}
