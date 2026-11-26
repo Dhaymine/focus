@@ -1,6 +1,10 @@
 name: Bootstrap
 
 on:
+  push:
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 permissions:
@@ -8,6 +12,7 @@ permissions:
 
 jobs:
   bootstrap:
+    if: ${{ hashFiles('pubspec.yaml') == '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
