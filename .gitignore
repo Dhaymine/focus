@@ -1,0 +1,50 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IDE
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Generated code (CI regenerates it)
+*.g.dart
+
+# Symbolication
+app.*.symbols
+app.*.map.json
+
+# Android
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/.gradle/
+/android/captures/
+/android/local.properties
+/android/gradle-wrapper.jar
+/android/key.properties
+*.jks
+*.keystore
+
+# Windows
+/windows/flutter/ephemeral/
