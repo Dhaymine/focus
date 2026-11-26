@@ -1,0 +1,38 @@
+name: Bootstrap
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Print Flutter version
+        run: |
+          flutter --version
+          flutter --version > FLUTTER_VERSION.txt
+
+      - name: Create Flutter project (Android + Windows only)
+        run: flutter create . --project-name focus --org com.focus.app --platforms=android,windows
+
+      - name: Show generated pubspec
+        run: cat pubspec.yaml
+
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Bootstrap Flutter project" || echo "Nothing to commit"
+          git push
