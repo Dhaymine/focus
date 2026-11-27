@@ -13,5 +13,21 @@
   "themeLight": "فاتح",
   "themeSystem": "النظام",
   "language": "اللغة",
-  "placeholderNote": "معاينة المرحلة 2. الواجهة الحقيقية تأتي في المرحلة 3."
+  "systemDefault": "النظام",
+  "dailyGoal": "الهدف اليومي",
+  "goalOf": "الهدف: {time}",
+  "studyTime": "وقت الدراسة",
+  "completedTasks": "المهام المنجزة",
+  "upcomingEvents": "الأحداث القادمة",
+  "noUpcomingEvents": "لا توجد أحداث قادمة بعد",
+  "focusStatus": "حالة التركيز",
+  "statusIdle": "متوقف",
+  "quickStartPomodoro": "ابدأ بومودورو",
+  "dailyProgress": "التقدم اليومي",
+  "durationHm": "{hours} س {minutes} د",
+  "comingInPhase": "قادم في المرحلة {phase}",
+  "focusDesc": "مؤقت بومودورو وحظر المشتتات",
+  "tasksDesc": "خطط لمهامك اليومية وتابعها",
+  "countdownDesc": "عدّ تنازلي للامتحانات والأحداث المهمة",
+  "statisticsDesc": "رسوم بيانية وسجل الإنتاجية"
 }
