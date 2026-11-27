@@ -25,6 +25,9 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Patch Android project (notifications)
+        run: python3 tools/patch_android.py
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -45,6 +48,8 @@ jobs:
 
   windows:
     runs-on: windows-latest
+    env:
+      CL: /D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS
     steps:
       - name: Checkout
         uses: actions/checkout@v4
