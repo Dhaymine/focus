@@ -11,6 +11,8 @@ class ProgressRing extends StatelessWidget {
     this.size = 120,
     this.strokeWidth = 12,
     this.child,
+    this.colors,
+    this.trackColor,
   });
 
   /// 0.0 to 1.0
@@ -19,9 +21,14 @@ class ProgressRing extends StatelessWidget {
   final double strokeWidth;
   final Widget? child;
 
+  /// Two or more gradient colors. Defaults to the app accent gradient.
+  final List<Color>? colors;
+  final Color? trackColor;
+
   @override
   Widget build(BuildContext context) {
-    final track = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final track =
+        trackColor ?? Theme.of(context).colorScheme.surfaceContainerHighest;
     return SizedBox(
       width: size,
       height: size,
@@ -34,6 +41,7 @@ class ProgressRing extends StatelessWidget {
               value: value.clamp(0.0, 1.0),
               trackColor: track,
               strokeWidth: strokeWidth,
+              colors: colors ?? const [AppColors.purple, AppColors.blue],
             ),
           ),
           if (child != null) child!,
@@ -48,11 +56,13 @@ class _RingPainter extends CustomPainter {
     required this.value,
     required this.trackColor,
     required this.strokeWidth,
+    required this.colors,
   });
 
   final double value;
   final Color trackColor;
   final double strokeWidth;
+  final List<Color> colors;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -69,7 +79,7 @@ class _RingPainter extends CustomPainter {
     final gradient = SweepGradient(
       startAngle: 0,
       endAngle: 2 * math.pi,
-      colors: const [AppColors.purple, AppColors.blue],
+      colors: colors.length >= 2 ? colors : [colors.first, colors.first],
       transform: const GradientRotation(-math.pi / 2),
     );
     final progressPaint = Paint()
@@ -77,12 +87,14 @@ class _RingPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
       ..shader = gradient.createShader(rect);
-    canvas.drawArc(rect, -math.pi / 2, 2 * math.pi * value, false, progressPaint);
+    canvas.drawArc(
+        rect, -math.pi / 2, 2 * math.pi * value, false, progressPaint);
   }
 
   @override
   bool shouldRepaint(covariant _RingPainter old) =>
       old.value != value ||
       old.trackColor != trackColor ||
-      old.strokeWidth != strokeWidth;
+      old.strokeWidth != strokeWidth ||
+      old.colors != colors;
 }
