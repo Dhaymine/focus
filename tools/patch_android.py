@@ -6,7 +6,6 @@ import sys
 app = pathlib.Path("android/app")
 DESUGAR_VERSION = "2.1.4"
 
-# ---------- Gradle ----------
 kts = app / "build.gradle.kts"
 groovy = app / "build.gradle"
 
@@ -20,6 +19,7 @@ if kts.exists():
             count=1,
         )
         if n == 0:
+            print(text)
             sys.exit("compileOptions block not found in build.gradle.kts")
     if "desugar_jdk_libs" not in text:
         dep = f'    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:{DESUGAR_VERSION}")'
@@ -28,6 +28,8 @@ if kts.exists():
         else:
             text += "\ndependencies {\n" + dep + "\n}\n"
     kts.write_text(text)
+    print("--- build.gradle.kts after patch ---")
+    print(text)
 elif groovy.exists():
     text = groovy.read_text()
     if "coreLibraryDesugaringEnabled" not in text:
@@ -38,6 +40,7 @@ elif groovy.exists():
             count=1,
         )
         if n == 0:
+            print(text)
             sys.exit("compileOptions block not found in build.gradle")
     if "desugar_jdk_libs" not in text:
         dep = f"    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:{DESUGAR_VERSION}'"
@@ -46,10 +49,11 @@ elif groovy.exists():
         else:
             text += "\ndependencies {\n" + dep + "\n}\n"
     groovy.write_text(text)
+    print("--- build.gradle after patch ---")
+    print(text)
 else:
     sys.exit("No android/app/build.gradle(.kts) found")
 
-# ---------- Manifest ----------
 manifest = app / "src/main/AndroidManifest.xml"
 text = manifest.read_text()
 
