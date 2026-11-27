@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/database/app_database.dart';
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../pomodoro/data/active_task_controller.dart';
 import '../../pomodoro/data/timer_controller.dart';
 import '../../pomodoro/domain/timer_snapshot.dart';
 import '../../pomodoro/presentation/segment_labels.dart';
 import '../../pomodoro/presentation/timer_view.dart';
 import '../../sounds/data/audio_service.dart';
+import '../../tasks/data/task_providers.dart';
 
 class FocusScreen extends ConsumerWidget {
   const FocusScreen({super.key});
@@ -52,6 +55,7 @@ class FocusScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
             ],
+            const _TaskBanner(),
             LayoutBuilder(
               builder: (context, c) {
                 if (c.maxWidth >= 860) {
@@ -95,6 +99,48 @@ class FocusScreen extends ConsumerWidget {
                   label: Text(l10n.fullScreen),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Shows the task the running timer is linked to.
+class _TaskBanner extends ConsumerWidget {
+  const _TaskBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final id = ref.watch(activeTaskIdProvider);
+    if (id == null) return const SizedBox.shrink();
+    final tasks = ref.watch(tasksProvider).valueOrNull ?? const <TaskRow>[];
+    TaskRow? task;
+    for (final t in tasks) {
+      if (t.id == id) task = t;
+    }
+    if (task == null) return const SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: AppCard(
+        child: Row(
+          children: [
+            const Icon(Icons.task_alt_rounded),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                l10n.workingOn(task.title),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close_rounded),
+              onPressed: () =>
+                  ref.read(activeTaskIdProvider.notifier).set(null),
             ),
           ],
         ),
@@ -187,8 +233,8 @@ class _Controls extends ConsumerWidget {
     final buttons = <Widget>[];
     switch (snap.status) {
       case TimerStatus.idle:
-        buttons.add(
-            filled(Icons.play_arrow_rounded, l10n.actionStart, c.start));
+        buttons.add(filled(
+            Icons.play_arrow_rounded, l10n.actionStart, () => c.start()));
       case TimerStatus.running:
         buttons.addAll([
           filled(Icons.pause_rounded, l10n.actionPause, c.pause),
