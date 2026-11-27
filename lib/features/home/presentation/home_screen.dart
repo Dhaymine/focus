@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -9,20 +10,37 @@ import '../../../shared/widgets/page_body.dart';
 import '../../../shared/widgets/progress_ring.dart';
 import '../../../shared/widgets/responsive_grid.dart';
 import '../../../shared/widgets/stat_tile.dart';
+import '../../pomodoro/data/history_controller.dart';
+import '../../pomodoro/data/timer_config_controller.dart';
+import '../../pomodoro/data/timer_controller.dart';
+import '../../pomodoro/domain/timer_snapshot.dart';
+import '../../pomodoro/presentation/segment_labels.dart';
 
-/// Dashboard skeleton. Values are placeholders until Phases 4 to 6 provide data.
-class HomeScreen extends StatelessWidget {
+/// Dashboard. Study time and focus status are live; tasks and events stay
+/// placeholders until Phases 5 and 6.
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final muted = theme.colorScheme.onSurface.withValues(alpha: 0.6);
     final localeName = Localizations.localeOf(context).toString();
     final today = DateFormat.yMMMMEEEEd(localeName).format(DateTime.now());
 
-    const double progress = 0; // placeholder (0 to 1)
+    final snap = ref.watch(timerControllerProvider);
+    final studyMs = ref.watch(todayStudyMsProvider);
+    final goalMin = ref.watch(timerConfigProvider).dailyGoalMinutes;
+
+    final studyMin = studyMs ~/ 60000;
+    final double progress =
+        goalMin <= 0 ? 0.0 : (studyMin / goalMin).clamp(0.0, 1.0);
+
+    final idle = snap.status == TimerStatus.idle;
+    final statusLine = idle
+        ? statusText(l10n, snap)
+        : '${statusText(l10n, snap)} · ${segmentName(l10n, snap.segment.type)}';
 
     return PageBody(
       children: [
@@ -76,9 +94,10 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          l10n.goalOf(l10n.durationHm(2, 0)),
-                          style:
-                              theme.textTheme.bodyMedium?.copyWith(color: muted),
+                          l10n.goalOf(
+                              l10n.durationHm(goalMin ~/ 60, goalMin % 60)),
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(color: muted),
                         ),
                       ],
                     ),
@@ -97,14 +116,22 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    l10n.statusIdle,
+                    statusLine,
                     style: theme.textTheme.bodyMedium?.copyWith(color: muted),
                   ),
                   const SizedBox(height: 16),
                   FilledButton.icon(
-                    onPressed: () => context.go('/focus'),
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    label: Text(l10n.quickStartPomodoro),
+                    onPressed: () {
+                      if (idle) {
+                        ref.read(timerControllerProvider.notifier).start();
+                      }
+                      context.go('/focus');
+                    },
+                    icon: Icon(idle
+                        ? Icons.play_arrow_rounded
+                        : Icons.timer_rounded),
+                    label: Text(
+                        idle ? l10n.quickStartPomodoro : l10n.openTimer),
                   ),
                 ],
               ),
@@ -118,7 +145,7 @@ class HomeScreen extends StatelessWidget {
             StatTile(
               icon: Icons.schedule_rounded,
               label: l10n.studyTime,
-              value: l10n.durationHm(0, 0),
+              value: l10n.durationHm(studyMin ~/ 60, studyMin % 60),
             ),
             StatTile(
               icon: Icons.task_alt_rounded,
@@ -165,7 +192,7 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: const LinearProgressIndicator(
+                    child: LinearProgressIndicator(
                       value: progress,
                       minHeight: 10,
                     ),
