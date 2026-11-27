@@ -13,5 +13,45 @@
   "themeLight": "Light",
   "themeSystem": "System",
   "language": "Language",
-  "placeholderNote": "Phase 2 preview. The real interface arrives in Phase 3."
+  "systemDefault": "System",
+  "dailyGoal": "Daily goal",
+  "goalOf": "Goal: {time}",
+  "@goalOf": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "studyTime": "Study time",
+  "completedTasks": "Completed tasks",
+  "upcomingEvents": "Upcoming events",
+  "noUpcomingEvents": "No upcoming events yet",
+  "focusStatus": "Focus status",
+  "statusIdle": "Idle",
+  "quickStartPomodoro": "Start Pomodoro",
+  "dailyProgress": "Daily progress",
+  "durationHm": "{hours}h {minutes}m",
+  "@durationHm": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "comingInPhase": "Coming in phase {phase}",
+  "@comingInPhase": {
+    "placeholders": {
+      "phase": {
+        "type": "int"
+      }
+    }
+  },
+  "focusDesc": "Pomodoro timer and distraction blocking",
+  "tasksDesc": "Plan and track your daily tasks",
+  "countdownDesc": "Count down to exams and important events",
+  "statisticsDesc": "Charts and productivity history"
 }
