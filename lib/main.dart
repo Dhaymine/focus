@@ -2,19 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/database/app_database.dart';
+import 'core/database/database_provider.dart';
 import 'core/localization/generated/app_localizations.dart';
 import 'core/routing/app_router.dart';
 import 'core/services/app_settings.dart';
 import 'core/services/preferences_provider.dart';
 import 'core/theme/app_theme.dart';
+import 'features/pomodoro/data/legacy_history_migration.dart';
 import 'features/pomodoro/data/timer_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
+  final db = AppDatabase.open();
+  try {
+    await migrateLegacyHistory(prefs, db);
+  } catch (_) {
+    // Never block startup; the migration retries on the next launch.
+  }
   runApp(
     ProviderScope(
-      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        appDatabaseProvider.overrideWithValue(db),
+      ],
       child: const FocusApp(),
     ),
   );
