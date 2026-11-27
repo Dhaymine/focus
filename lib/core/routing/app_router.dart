@@ -10,6 +10,7 @@ import '../../features/pomodoro/presentation/timer_settings_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/sounds/presentation/sound_settings_screen.dart';
 import '../../features/statistics/presentation/statistics_screen.dart';
+import '../../features/tasks/presentation/task_editor_screen.dart';
 import '../../features/tasks/presentation/tasks_screen.dart';
 import 'app_shell.dart';
 
@@ -72,6 +73,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/timer-fullscreen',
         builder: (context, state) => const FullscreenTimerScreen(),
+      ),
+      GoRoute(
+        path: '/task-editor',
+        builder: (context, state) =>
+            TaskEditorScreen(taskId: state.extra as String?),
       ),
     ],
   );
