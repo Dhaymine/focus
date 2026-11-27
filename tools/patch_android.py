@@ -1,11 +1,19 @@
-"""Idempotent patch of the generated Android project for flutter_local_notifications."""
+"""Idempotent patch of the generated Android project.
+
+1. Core library desugaring (flutter_local_notifications)
+2. Notification permissions and receivers in the manifest
+3. Force compileSdk 36 on all Android library subprojects (file_picker etc.)
+"""
 import pathlib
 import re
 import sys
 
 app = pathlib.Path("android/app")
+root = pathlib.Path("android")
 DESUGAR_VERSION = "2.1.4"
+COMPILE_SDK = 36
 
+# ---------- app gradle: desugaring ----------
 kts = app / "build.gradle.kts"
 groovy = app / "build.gradle"
 
@@ -28,8 +36,6 @@ if kts.exists():
         else:
             text += "\ndependencies {\n" + dep + "\n}\n"
     kts.write_text(text)
-    print("--- build.gradle.kts after patch ---")
-    print(text)
 elif groovy.exists():
     text = groovy.read_text()
     if "coreLibraryDesugaringEnabled" not in text:
@@ -49,11 +55,65 @@ elif groovy.exists():
         else:
             text += "\ndependencies {\n" + dep + "\n}\n"
     groovy.write_text(text)
-    print("--- build.gradle after patch ---")
-    print(text)
 else:
     sys.exit("No android/app/build.gradle(.kts) found")
 
+# ---------- root gradle: force compileSdk on library subprojects ----------
+MARK = "FOCUS_FORCE_COMPILE_SDK"
+root_kts = root / "build.gradle.kts"
+root_groovy = root / "build.gradle"
+
+KTS_BLOCK = f"""
+// {MARK}
+subprojects {{
+    afterEvaluate {{
+        if (plugins.hasPlugin("com.android.library")) {{
+            extensions.getByName("android").withGroovyBuilder {{
+                "compileSdkVersion"({COMPILE_SDK})
+            }}
+        }}
+    }}
+}}
+"""
+
+GROOVY_BLOCK = f"""
+// {MARK}
+subprojects {{
+    afterEvaluate {{ p ->
+        if (p.plugins.hasPlugin('com.android.library')) {{
+            p.android.compileSdkVersion {COMPILE_SDK}
+        }}
+    }}
+}}
+"""
+
+
+def insert_block(path: pathlib.Path, block: str) -> None:
+    text = path.read_text()
+    if MARK in text:
+        return
+    lines = text.split("\n")
+    last_import = -1
+    for i, line in enumerate(lines):
+        if line.startswith("import "):
+            last_import = i
+    head = lines[: last_import + 1]
+    tail = lines[last_import + 1 :]
+    path.write_text("\n".join(head) + "\n" + block + "\n".join(tail))
+
+
+if root_kts.exists():
+    insert_block(root_kts, KTS_BLOCK)
+    print("--- android/build.gradle.kts after patch ---")
+    print(root_kts.read_text())
+elif root_groovy.exists():
+    insert_block(root_groovy, GROOVY_BLOCK)
+    print("--- android/build.gradle after patch ---")
+    print(root_groovy.read_text())
+else:
+    sys.exit("No android/build.gradle(.kts) found")
+
+# ---------- manifest ----------
 manifest = app / "src/main/AndroidManifest.xml"
 text = manifest.read_text()
 
