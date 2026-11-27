@@ -19,7 +19,8 @@ import '../domain/timer_config.dart';
 import '../domain/timer_engine.dart';
 import '../domain/timer_plan.dart';
 import '../domain/timer_snapshot.dart';
-import 'history_controller.dart';
+import 'active_task_controller.dart';
+import 'history_repository.dart';
 import 'timer_config_controller.dart';
 
 const _snapshotKey = 'timer_snapshot';
@@ -64,10 +65,10 @@ class TimerController extends Notifier<TimerSnapshot> {
     });
 
     final recovered = res.records;
+    final planFinished = res.planFinished;
     Future.microtask(() {
-      if (recovered.isNotEmpty) {
-        ref.read(historyProvider.notifier).addAll(recovered);
-      }
+      _saveRecords(recovered);
+      if (planFinished) _clearActiveTask();
       _persist();
       _scheduleNotifications();
     });
@@ -87,8 +88,21 @@ class TimerController extends Notifier<TimerSnapshot> {
     _persist();
   }
 
+  /// Stores finished segments, linked to the active task (if any).
+  void _saveRecords(List<SegmentRecord> records) {
+    if (records.isEmpty) return;
+    final taskId = ref.read(activeTaskIdProvider);
+    unawaited(
+      ref.read(historyRepositoryProvider).addAll(records, taskId: taskId),
+    );
+  }
+
   void _record(SegmentRecord? r) {
-    if (r != null) ref.read(historyProvider.notifier).addAll([r]);
+    if (r != null) _saveRecords([r]);
+  }
+
+  void _clearActiveTask() {
+    unawaited(ref.read(activeTaskIdProvider.notifier).set(null));
   }
 
   AppLocalizations _l10n() {
@@ -161,16 +175,17 @@ class TimerController extends Notifier<TimerSnapshot> {
     if (s.status != TimerStatus.running || now < s.segmentEndsAtMs) return;
     final res = TimerEngine.sync(s, now);
     _setState(res.snapshot);
-    if (res.records.isNotEmpty) {
-      ref.read(historyProvider.notifier).addAll(res.records);
-    }
+    _saveRecords(res.records);
+    if (res.planFinished) _clearActiveTask();
     if (res.lastCompleted != null) _alertBoundary(res.lastCompleted!);
     _scheduleNotifications();
   }
 
   // ----------------------------------------------------------------- actions
 
-  Future<void> start() async {
+  /// Starts the plan. [taskId] links the study time to a task (null = free).
+  Future<void> start({String? taskId}) async {
+    unawaited(ref.read(activeTaskIdProvider.notifier).set(taskId));
     final cfg = ref.read(timerConfigProvider);
     _setState(TimerEngine.start(cfg, _now()));
     _playStart(state.segment.type);
@@ -200,6 +215,7 @@ class TimerController extends Notifier<TimerSnapshot> {
     final r = TimerEngine.stop(state, _now(), ref.read(timerConfigProvider));
     _record(r.record);
     _setState(r.snapshot);
+    _clearActiveTask();
     _scheduleNotifications();
     stopAlarm();
   }
@@ -217,7 +233,11 @@ class TimerController extends Notifier<TimerSnapshot> {
     _record(r.record);
     _setState(r.snapshot);
     _scheduleNotifications();
-    if (!r.finished) _playStart(r.snapshot.segment.type);
+    if (r.finished) {
+      _clearActiveTask();
+    } else {
+      _playStart(r.snapshot.segment.type);
+    }
   }
 
   void stopAlarm() {
