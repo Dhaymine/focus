@@ -188,5 +188,71 @@
   "notifBreakDone": "Break is over",
   "notifBreakDoneBody": "Time to focus",
   "notifPlanDone": "All sessions completed",
-  "notifPlanDoneBody": "Great work!"
+  "notifPlanDoneBody": "Great work!",
+  "viewToday": "Today",
+  "viewWeek": "This week",
+  "viewAll": "All",
+  "filterPending": "Pending",
+  "filterCompleted": "Completed",
+  "noTasks": "No tasks yet",
+  "noTasksHint": "Tap Add task to create your first one.",
+  "addTask": "Add task",
+  "newTask": "New task",
+  "editTask": "Edit task",
+  "taskTitleLabel": "Title",
+  "taskDescriptionLabel": "Description",
+  "priorityLabel": "Priority",
+  "priorityLow": "Low",
+  "priorityMedium": "Medium",
+  "priorityHigh": "High",
+  "categoryLabel": "Category",
+  "categoryNone": "None",
+  "newCategory": "New category",
+  "categoryName": "Category name",
+  "deleteCategoryHint": "Long-press a category to delete it",
+  "deleteCategoryQ": "Delete this category? Your tasks are kept.",
+  "deadlineLabel": "Deadline",
+  "reminderLabel": "Reminder",
+  "notSet": "Not set",
+  "clearLabel": "Clear",
+  "estimatedTime": "Estimated time",
+  "timeSpent": "Time spent: {time}",
+  "@timeSpent": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "subtasksLabel": "Subtasks",
+  "addSubtask": "Add subtask",
+  "subtasksProgress": "{done}/{total} subtasks",
+  "@subtasksProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "actionSave": "Save",
+  "actionDelete": "Delete",
+  "deleteTaskQ": "Delete this task?",
+  "startTaskFocus": "Start focus on this task",
+  "replaceTimerQ": "A timer is already running. Replace it?",
+  "actionReplace": "Replace",
+  "workingOn": "Working on: {title}",
+  "@workingOn": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "dueToday": "Due today",
+  "overdue": "Overdue",
+  "taskReminderBody": "Task reminder",
+  "titleRequired": "Please enter a title"
 }
