@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:convert';
 
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/services/app_settings.dart';
@@ -15,6 +15,7 @@ import '../../sounds/data/audio_service.dart';
 import '../../sounds/data/sound_settings_controller.dart';
 import '../../sounds/domain/sound_settings.dart';
 import '../domain/segment_record.dart';
+import '../domain/timer_config.dart';
 import '../domain/timer_engine.dart';
 import '../domain/timer_plan.dart';
 import '../domain/timer_snapshot.dart';
@@ -56,14 +57,11 @@ class TimerController extends Notifier<TimerSnapshot> {
       if (v != null) _onTick(v);
     });
 
-    ref.listen<TimerConfigOrNull>(
-      timerConfigProvider.select((c) => TimerConfigOrNull(c)),
-      (_, next) {
-        if (state.status == TimerStatus.idle) {
-          _setState(TimerEngine.idle(next.config));
-        }
-      },
-    );
+    ref.listen<TimerConfig>(timerConfigProvider, (_, next) {
+      if (state.status == TimerStatus.idle) {
+        _setState(TimerEngine.idle(next));
+      }
+    });
 
     final recovered = res.records;
     Future.microtask(() {
@@ -94,7 +92,8 @@ class TimerController extends Notifier<TimerSnapshot> {
   }
 
   AppLocalizations _l10n() {
-    final locale = ref.read(localeProvider) ?? PlatformDispatcher.instance.locale;
+    final locale =
+        ref.read(localeProvider) ?? PlatformDispatcher.instance.locale;
     final supported = AppLocalizations.delegate.isSupported(locale);
     return lookupAppLocalizations(supported ? locale : const Locale('en'));
   }
@@ -123,7 +122,7 @@ class TimerController extends Notifier<TimerSnapshot> {
   }
 
   void _alertBoundary(SegmentType finished) {
-    if (!_inForeground()) return; // system notification covers this case
+    if (!_inForeground()) return; // the system notification covers this case
     final s = ref.read(soundSettingsProvider);
     final e = finished == SegmentType.study
         ? SoundEvent.studyEnd
@@ -224,13 +223,6 @@ class TimerController extends Notifier<TimerSnapshot> {
   void stopAlarm() {
     unawaited(ref.read(audioServiceProvider).stopAlarm());
   }
-}
-
-/// Wrapper so config changes are always detected by [Notifier.listen].
-class TimerConfigOrNull {
-  const TimerConfigOrNull(this.config);
-
-  final dynamic config;
 }
 
 final timerControllerProvider =
