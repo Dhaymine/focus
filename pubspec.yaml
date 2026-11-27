@@ -1,5 +1,5 @@
 name: focus
-description: FOCUS personal productivity app for Android and Windows.
+description: FOCUS personal productivity app for Android, Windows and iOS (reduced).
 publish_to: "none"
 version: 0.1.0+1
 
@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   intl: any
   flutter_riverpod: ^2.6.1
+  go_router: ^14.6.0
   shared_preferences: ^2.3.0
 
 dev_dependencies:
