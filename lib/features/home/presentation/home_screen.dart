@@ -10,14 +10,15 @@ import '../../../shared/widgets/page_body.dart';
 import '../../../shared/widgets/progress_ring.dart';
 import '../../../shared/widgets/responsive_grid.dart';
 import '../../../shared/widgets/stat_tile.dart';
-import '../../pomodoro/data/history_controller.dart';
+import '../../pomodoro/data/history_repository.dart';
 import '../../pomodoro/data/timer_config_controller.dart';
 import '../../pomodoro/data/timer_controller.dart';
 import '../../pomodoro/domain/timer_snapshot.dart';
 import '../../pomodoro/presentation/segment_labels.dart';
+import '../../tasks/data/task_providers.dart';
 
-/// Dashboard. Study time and focus status are live; tasks and events stay
-/// placeholders until Phases 5 and 6.
+/// Dashboard. Study time, focus status and tasks are live; events stay a
+/// placeholder until Phase 6.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -30,8 +31,10 @@ class HomeScreen extends ConsumerWidget {
     final today = DateFormat.yMMMMEEEEd(localeName).format(DateTime.now());
 
     final snap = ref.watch(timerControllerProvider);
-    final studyMs = ref.watch(todayStudyMsProvider);
+    final studyMs = ref.watch(todayStudyMsProvider).valueOrNull ?? 0;
     final goalMin = ref.watch(timerConfigProvider).dailyGoalMinutes;
+    final completedToday = ref.watch(completedTodayCountProvider);
+    final dueToday = ref.watch(dueTodayCountProvider);
 
     final studyMin = studyMs ~/ 60000;
     final double progress =
@@ -150,7 +153,12 @@ class HomeScreen extends ConsumerWidget {
             StatTile(
               icon: Icons.task_alt_rounded,
               label: l10n.completedTasks,
-              value: '0',
+              value: '$completedToday',
+            ),
+            StatTile(
+              icon: Icons.today_rounded,
+              label: l10n.dueToday,
+              value: '$dueToday',
             ),
             StatTile(
               icon: Icons.event_available_rounded,
