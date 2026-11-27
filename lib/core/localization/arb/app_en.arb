@@ -30,6 +30,7 @@
   "focusStatus": "Focus status",
   "statusIdle": "Idle",
   "quickStartPomodoro": "Start Pomodoro",
+  "openTimer": "Open timer",
   "dailyProgress": "Daily progress",
   "durationHm": "{hours}h {minutes}m",
   "@durationHm": {
@@ -53,5 +54,139 @@
   "focusDesc": "Pomodoro timer and distraction blocking",
   "tasksDesc": "Plan and track your daily tasks",
   "countdownDesc": "Count down to exams and important events",
-  "statisticsDesc": "Charts and productivity history"
+  "statisticsDesc": "Charts and productivity history",
+  "sessionStudy": "Study",
+  "sessionShortBreak": "Short break",
+  "sessionLongBreak": "Long break",
+  "actionStart": "Start",
+  "actionPause": "Pause",
+  "actionResume": "Resume",
+  "actionStop": "Stop",
+  "actionRestart": "Restart",
+  "actionSkip": "Skip",
+  "actionStartNext": "Start next",
+  "statusRunning": "Running",
+  "statusPaused": "Paused",
+  "statusWaiting": "Ready for the next session",
+  "statusFinished": "All sessions completed",
+  "currentSession": "Current session",
+  "nextSession": "Next: {name} · {time}",
+  "@nextSession": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastSession": "This is the last session",
+  "sessionProgress": "Session {current} of {total}",
+  "@sessionProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "cycleProgress": "Cycle {current} of {total}",
+  "@cycleProgress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "totalStudyLabel": "Total study time: {time}",
+  "@totalStudyLabel": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "minutesShort": "{n} min",
+  "@minutesShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "stopAlarm": "Stop alarm",
+  "alarmRinging": "Alarm is ringing",
+  "timerSettings": "Timer settings",
+  "soundSettings": "Sounds",
+  "appearanceSettings": "Appearance",
+  "fullScreen": "Full screen",
+  "studyDuration": "Study duration",
+  "shortBreakDuration": "Short break duration",
+  "longBreakDuration": "Long break duration",
+  "sessionsBeforeLongBreak": "Sessions before long break",
+  "cyclesCount": "Number of cycles",
+  "autoTransitions": "Automatic transitions",
+  "autoTransitionsDesc": "Start the next session automatically",
+  "autoRepeat": "Automatic repetition",
+  "autoRepeatDesc": "Restart the whole plan when it ends",
+  "dailyGoalMinutes": "Daily study goal",
+  "resetDefaults": "Reset to defaults",
+  "appliesNextStart": "Changes apply the next time you start the timer.",
+  "soundStudyStart": "Study start",
+  "soundStudyEnd": "Study complete",
+  "soundBreakStart": "Break start",
+  "soundBreakEnd": "Break complete",
+  "soundNone": "None",
+  "soundBell": "Bell",
+  "soundChime": "Chime",
+  "soundBeep": "Beep",
+  "soundSoft": "Soft",
+  "soundDigital": "Digital",
+  "volume": "Volume",
+  "vibration": "Vibration",
+  "repeatCount": "Repeat count",
+  "loopAlarm": "Loop until stopped",
+  "loopAlarmDesc": "Keeps playing until you tap Stop alarm",
+  "importSound": "Import audio file",
+  "customSounds": "Your sounds",
+  "previewSound": "Preview",
+  "removeSound": "Remove",
+  "noCustomSounds": "No imported sounds yet",
+  "importFailed": "Could not import the file",
+  "soundsNote": "Alerts while the app is in the background use the system notification sound. Your own sounds play while the app is open.",
+  "timerStyle": "Timer style",
+  "styleCircular": "Circular",
+  "styleDigital": "Digital",
+  "styleMinimal": "Minimal",
+  "timerThemeLabel": "Theme",
+  "accentColor": "Accent color",
+  "accentAuto": "Auto",
+  "fontLabel": "Font",
+  "fontDefault": "Default",
+  "fontMono": "Monospace",
+  "fontSerif": "Serif",
+  "fontSize": "Font size",
+  "showRing": "Show progress ring",
+  "backgroundLabel": "Background",
+  "bgPlain": "Plain",
+  "bgGradient": "Gradient",
+  "bgPhoto": "Photo",
+  "choosePhoto": "Choose photo",
+  "tmAurora": "Aurora",
+  "tmMidnight": "Midnight",
+  "tmSunset": "Sunset",
+  "tmForest": "Forest",
+  "tmMono": "Mono",
+  "notifStudyDone": "Study session complete",
+  "notifStudyDoneBody": "Time for a break",
+  "notifBreakDone": "Break is over",
+  "notifBreakDoneBody": "Time to focus",
+  "notifPlanDone": "All sessions completed",
+  "notifPlanDoneBody": "Great work!"
 }
